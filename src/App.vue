@@ -1,56 +1,44 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-// 1. 给 reactive 添加类型约束
-// 方式1：使用类型推导
-const form = reactive({
-  username: 'test',
-  password:'123123',
+import { ref,computed } from "vue";
+// 目标：computed 的类型约束
+
+// 方式：computed会自动推导，无需配置，也不应该配置
+const count=ref(10)
+
+const doubleCount=computed(()=>{
+  return count.value*2
 })
 
-console.log(form);
+console.log(doubleCount.value);
 
-
-// 方式2：手动指定类型
-type LoginForm = {
-  username: string,
-  password: string,
-  isGreed?: bool,
+// 练习题
+type Goods = {
+  id:string,
+  name:string,
+  price:number,
 }
 
-const login: LoginForm=reactive({
-  username:'test1',
-  password:"123321",
+const goodsList=ref<Goods[]>([])
+goodsList.value=[
+  {id:'1001',name:'男鞋',price:550},
+  {id:'1002',name:'女鞋',price:850},
+  {id:'1003',name:'衬衫',price:450},
+]
+
+const newList=computed(()=>{
+  return goodsList.value.filter(item=>{
+    return item.price>500
+    }
+  )
 })
-
-login.isGreed=true
-
-console.log(login);
-
-// 思考题
-type address = {
-    username: string,
-    address:string,
-    phone:string,
-    gender?:'男'|'女'
-}
-
-const myAddress: address=reactive(
-  {
-    username: 'you',
-    address: 'cn',
-    phone: '1234566778',
-  }
-)
-
-myAddress.gender='男'
-
-console.log(myAddress);
-
-
-
 </script>
 
 <template>
+  <ul>
+    <li v-for="item in newList" :key="item.id">
+    {{ item.name }}---{{ item.price }}
+    </li>
+  </ul>
 </template>
 
 <style scoped>
